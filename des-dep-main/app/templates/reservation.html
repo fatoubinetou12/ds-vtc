@@ -1,0 +1,173 @@
+{% extends "layout.html" %}
+{% block title %}Réserver {{ vehicule.marque }} {{ vehicule.modele }}{% endblock %}
+
+{% block content %}
+<section class="text-white fullscreen-banner position-relative">
+  <!-- Image de fond -->
+  <img src="{{ url_for('static', filename=vehicule.image or 'images/ba.jpg') }}"
+       alt="Réservation véhicule"
+       style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:1;">
+  <div style="position:absolute;inset:0;background:rgba(0,0,0,0.6);z-index:2;"></div>
+
+  <div class="container position-relative py-5" style="z-index:3;">
+
+    <h1 class="text-center fw-bold text-success mb-4">
+      Réserver {{ vehicule.marque }} {{ vehicule.modele }}
+    </h1>
+
+    <!-- Carte centrale -->
+    <div class="bg-white text-dark rounded shadow p-4 mx-auto" style="max-width:900px;">
+      <form method="POST" action="{{ url_for('main.reservation_recap', vehicule_id=vehicule.id) }}">
+        {{ form.hidden_tag() }}
+
+        <!-- Détails client -->
+        <h4 class="text-success border-bottom pb-2 mb-4">Détails client</h4>
+        <div class="row g-3">
+          <div class="col-md-6">
+            {{ form.client_nom.label(class="form-label") }}
+            {{ form.client_nom(class="form-control", placeholder="Votre nom complet") }}
+          </div>
+          <div class="col-md-6">
+            {{ form.client_email.label(class="form-label") }}
+            {{ form.client_email(class="form-control", placeholder="ex: nom@email.com") }}
+          </div>
+          <div class="col-md-6">
+            {{ form.client_telephone.label(class="form-label") }}
+            {{ form.client_telephone(class="form-control", placeholder="ex: +221 77 000 00 00") }}
+          </div>
+        </div>
+
+        <!-- Détails du trajet -->
+        <h4 class="text-success border-bottom pb-2 mt-5 mb-4">Détails du trajet</h4>
+        <div class="row g-3">
+          <div class="col-md-6">
+            {{ form.date_heure.label(class="form-label") }}
+            {{ form.date_heure(class="form-control") }}
+          </div>
+          <div class="col-md-6"></div>
+
+          <div class="col-md-6">
+            {{ form.adresse_depart.label(class="form-label") }}
+            {{ form.adresse_depart(
+                id="adresse_depart",
+                class="form-control",
+                placeholder="Adresse de départ",
+                autocomplete="off"
+            ) }}
+          </div>
+          <div class="col-md-6">
+            {{ form.adresse_arrivee.label(class="form-label") }}
+            {{ form.adresse_arrivee(
+                id="adresse_arrivee",
+                class="form-control",
+                placeholder="Adresse d’arrivée",
+                autocomplete="off"
+            ) }}
+          </div>
+
+          <div class="col-12">
+            <small class="text-muted">
+              Préciser votre adresse exacte pour une meilleure prise en charge.
+            </small>
+          </div>
+        </div>
+
+        <!-- Passagers et bagages -->
+        <h4 class="text-success border-bottom pb-2 mt-5 mb-4">Passagers et bagages</h4>
+        <div class="row g-3">
+          <div class="col-md-4">
+            {{ form.nb_passagers.label(class="form-label") }}
+            {{ form.nb_passagers(class="form-control") }}
+          </div>
+          <div class="col-md-4">
+            {{ form.nb_valises_23kg.label(class="form-label") }}
+            {{ form.nb_valises_23kg(class="form-control") }}
+          </div>
+          <div class="col-md-4">
+            {{ form.nb_valises_10kg.label(class="form-label") }}
+            {{ form.nb_valises_10kg(class="form-control") }}
+          </div>
+          <div class="col-md-4">
+            {{ form.nb_sieges_bebe.label(class="form-label") }}
+            {{ form.nb_sieges_bebe(class="form-control") }}
+          </div>
+          <div class="col-md-8">
+            {{ form.poids_enfants.label(class="form-label") }}
+            {{ form.poids_enfants(class="form-control") }}
+          </div>
+        </div>
+
+        <!-- Paiement et commentaires -->
+        <h4 class="text-success border-bottom pb-2 mt-5 mb-4">Paiement & Commentaires</h4>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">Mode de paiement</label>
+            <select name="paiement" id="paiement" class="form-select">
+              <option value="especes" selected>
+                Espèces (Francs CFA – Euro – Dollar US)
+              </option>
+            </select>
+          </div>
+          <div class="col-12">
+            {{ form.commentaires.label(class="form-label") }}
+            {{ form.commentaires(class="form-control", rows=3, placeholder="Informations utiles pour le chauffeur…") }}
+          </div>
+        </div>
+
+        <!-- Boutons -->
+        <div class="d-flex justify-content-between align-items-center mt-5">
+          <a href="{{ url_for('main.vehicules_disponibles') }}"
+             class="btn btn-outline-secondary btn-lg px-4">
+            ← Retour
+          </a>
+
+          <button type="submit" class="btn btn-success btn-lg px-5">
+            Continuer →
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ========= GOOGLE PLACES AUTOCOMPLETE POUR CETTE PAGE ========= -->
+<script>
+  function initReservationAutocomplete() {
+    const options = {
+      componentRestrictions: { country: ["sn"] },   // Sénégal
+      fields: ["formatted_address", "geometry", "name"],
+      types: ["geocode"]
+    };
+
+    const departInput  = document.getElementById("adresse_depart");
+    const arriveeInput = document.getElementById("adresse_arrivee");
+
+    if (window.google && google.maps && google.maps.places) {
+      if (departInput) {
+        new google.maps.places.Autocomplete(departInput, options);
+      }
+      if (arriveeInput) {
+        new google.maps.places.Autocomplete(arriveeInput, options);
+      }
+    }
+  }
+
+  // On attend que le DOM soit prêt, puis on initialise.
+  document.addEventListener("DOMContentLoaded", function () {
+    // Si le script Google Maps est déjà chargé (layout / tarifs)
+    if (window.google && google.maps && google.maps.places) {
+      initReservationAutocomplete();
+    } else {
+      // Si le script se charge un peu après, on vérifie toutes les 500 ms
+      const intervalId = setInterval(function () {
+        if (window.google && google.maps && google.maps.places) {
+          clearInterval(intervalId);
+          initReservationAutocomplete();
+        }
+      }, 500);
+    }
+  });
+</script>
+
+{% endblock %}

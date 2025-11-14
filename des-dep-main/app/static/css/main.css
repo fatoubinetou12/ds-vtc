@@ -1,0 +1,271 @@
+/* =============================== */
+/* 🌍 GLOBAL */
+/* =============================== */
+:root{
+  /* Palette DS Développement */
+  --ds-blue: #1f6fff;          /* bleu principal */
+  --ds-blue-dark: #093472;     /* bleu foncé */
+  --ds-blue-soft: #e6f0ff;     /* bleu très clair */
+
+  /* Compat ancien code (green -> bleu DS) */
+  --green: var(--ds-blue);
+  --green-600: var(--ds-blue-dark);
+  --green-soft: var(--ds-blue-soft);
+
+  /* Neutres */
+  --ink: #0d1b2a;
+  --ink-2: #33434f;
+  --muted: #6c7a86;
+  --bg: #f7faf9;
+  --card: #ffffff;
+
+  --shadow: 0 8px 24px rgba(16,24,40,.06);
+  --nav-h: 72px;               /* hauteur navbar fixe */
+}
+
+html{ scroll-behavior:smooth; }
+body{
+  font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: #f8f9fa;
+}
+
+/* Décale le contenu sous la navbar partout sauf home (hero plein écran) */
+body:not(#home-page) main{ padding-top: calc(var(--nav-h) + 8px); }
+body#home-page main{ padding-top: 0; }
+
+/* =============================== */
+/* 🔵 NAVBAR */
+/* =============================== */
+#mainNav{ transition: background-color .25s ease, box-shadow .25s ease, padding .25s; z-index:1030; padding:.6rem 0; }
+#mainNav .logo-ds{ height: 42px; width:auto; object-fit:contain; }
+#mainNav .brand-text{ font-weight:800; letter-spacing:.5px; color:#e7eefb; font-size:1.1rem; }
+
+/* Sur le hero (transparente) */
+#mainNav.nav-hero{
+  background: linear-gradient(180deg, rgba(7, 20, 45,.75), rgba(7, 20, 45,.25), rgba(7,20,45,0));
+  box-shadow:none;
+}
+#mainNav.nav-hero .nav-link{ color:#f3f6ff; opacity:.95; }
+#mainNav.nav-hero .nav-link:hover{ opacity:1; text-decoration: underline; text-underline-offset:6px; }
+
+/* Après scroll (solide) */
+#mainNav.nav-solid{
+  background: linear-gradient(180deg, var(--ds-blue-dark), #0b3f8a);
+  box-shadow:0 8px 24px rgba(16,24,40,.18);
+}
+#mainNav.nav-solid .nav-link{ color:#e9f0ff; }
+#mainNav.nav-solid .nav-link:hover{ color:#fff; text-decoration: underline; text-underline-offset:6px; }
+
+/* Actif/focus */
+#mainNav .nav-link.active, #mainNav .nav-link:focus{
+  color:#fff !important; text-decoration: underline; text-underline-offset:6px;
+}
+
+/* =============================== */
+/* 🚘 HERO HOME DS TRAVEL */
+/* =============================== */
+.hero-banner{
+  position:relative; min-height:100vh;
+  display:flex; align-items:center; justify-content:center; text-align:center; color:#fff; overflow:hidden;
+}
+.hero-banner-img{
+  position:absolute; inset:0; width:100%; height:100%; object-fit:cover; filter:brightness(.65); z-index:1;
+}
+.hero-banner::after{
+  content:""; position:absolute; inset:0; z-index:2;
+  background:
+    radial-gradient(1200px 500px at 50% 10%, rgba(255,255,255,.06), transparent 60%),
+    linear-gradient(to bottom, rgba(0,0,0,0) 60%, rgba(0,0,0,.35));
+}
+.hero-inner{ position:relative; z-index:3; max-width:900px; padding:7rem 1.5rem 4rem; }
+.hero-chip{
+  display:inline-flex; align-items:center; gap:.5rem; padding:.4rem .75rem; border-radius:999px;
+  background: rgba(31,111,255,.18); border:1px solid rgba(255,255,255,.35); backdrop-filter: blur(6px); font-weight:600;
+}
+.hero-title{ text-shadow:0 2px 12px rgba(0,0,0,.35); }
+
+/* =============================== */
+/* 🟦 TITRES DE SECTION */
+/* =============================== */
+.section-title{ position:relative; display:inline-block; color:var(--ink); }
+.section-title::after{
+  content:""; position:absolute; left:50%; transform:translateX(-50%); bottom:-10px;
+  width:120px; height:4px; border-radius:999px; background: linear-gradient(90deg, #2563eb, #38bdf8);
+}
+
+/* =============================== */
+/* 🧩 “POURQUOI DS TRAVEL ?” */
+/* =============================== */
+/* Forcer “text-success” Bootstrap à adopter le bleu DS (cohérence) */
+.text-success{ color: var(--ds-blue-dark) !important; }
+/* Badge bleu */
+.badge.bg-success-subtle{
+  background: var(--ds-blue-soft) !important;
+  color: var(--ds-blue-dark) !important;
+  border: 1px solid rgba(31,111,255,.25) !important;
+}
+/* Cartes */
+.card-prestation{
+  background:var(--card); border-radius:1.25rem; box-shadow:var(--shadow);
+  transition:.25s ease; border:1px solid rgba(0,0,0,.03);
+}
+.card-prestation:hover{ transform:translateY(-4px); box-shadow:0 16px 32px rgba(16,24,40,.1); }
+
+/* =============================== */
+/* 🧱 CARTES GÉNÉRIQUES + VÉHICULES */
+/* =============================== */
+.card-vehicule{
+  border-radius:1rem; box-shadow:var(--shadow);
+  transition: transform .2s ease, box-shadow .2s ease; border:1px solid rgba(0,0,0,.03);
+}
+.card-vehicule:hover{ transform:translateY(-4px); box-shadow:0 12px 28px rgba(16,24,40,.10); }
+
+/* Badges véhicules */
+.badge-eco{ background:#e0f2fe; color:#075985; border:1px solid #bae6fd; border-radius:.6rem; padding:.25rem .6rem; }
+.badge-new{ background:#f5f3ff; color:#4c1d95; border:1px solid #ddd6fe; border-radius:.6rem; padding:.25rem .6rem; }
+
+/* Boutons (bleu DS au lieu du vert Bootstrap) */
+.btn-outline-success{
+  color: var(--ds-blue); border-color: var(--ds-blue); font-weight:600;
+}
+.btn-outline-success:hover,.btn-outline-success:focus{
+  color:#fff; background:var(--ds-blue); border-color: var(--ds-blue-dark);
+}
+.btn-success{
+  background:var(--ds-blue); border-color:var(--ds-blue); font-weight:600;
+}
+.btn-success:hover,.btn-success:focus{
+  background:var(--ds-blue-dark); border-color:var(--ds-blue-dark);
+}
+
+/* =============================== */
+/* 💬 WHATSAPP */
+/* =============================== */
+.whatsapp-float{
+  position:fixed; right:20px; bottom:20px; width:56px; height:56px; border-radius:50%;
+  display:grid; place-items:center; background:#25D366; color:#fff; font-size:1.8rem;
+  box-shadow:0 8px 24px rgba(0,0,0,.18); transition: transform .2s; z-index:50;
+}
+.whatsapp-float:hover{ transform: translateY(-2px); }
+
+/* =============================== */
+/* 🧊 SERVICES – BLEU PREMIUM */
+/* =============================== */
+.services-section{
+  background: linear-gradient(180deg, #f8fafc 0%, #edf2f8 100%);
+  padding: 4rem 0;
+}
+.service-grid .service-tile{
+  background:#fff; border:1px solid rgba(0,0,0,.05); border-radius:18px;
+  padding:20px 16px; min-height:150px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.7rem;
+  box-shadow:0 6px 20px rgba(37,99,235,.08);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.service-grid .service-tile:hover{ transform:translateY(-6px); box-shadow:0 12px 28px rgba(37,99,235,.18); }
+.service-icon{
+  width:58px; height:58px; border-radius:50%; display:grid; place-items:center;
+  background: radial-gradient(120% 120% at 20% 20%, #e0f2fe 0%, #bfdbfe 60%, #ffffff 100%);
+  box-shadow: inset 0 0 0 1px rgba(37,99,235,.25), 0 4px 10px rgba(37,99,235,.10);
+}
+.service-icon i{ font-size:1.4rem; color:#2563eb; }
+.service-tile p{ margin:0; font-weight:600; color:#1e293b; }
+
+/* Apparition douce */
+@keyframes fadeUp{ from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:translateY(0)} }
+.service-grid .col{ animation: fadeUp .45s ease both; }
+.service-grid .col:nth-child(1){animation-delay:.02s}
+.service-grid .col:nth-child(2){animation-delay:.06s}
+.service-grid .col:nth-child(3){animation-delay:.10s}
+.service-grid .col:nth-child(4){animation-delay:.14s}
+.service-grid .col:nth-child(5){animation-delay:.18s}
+.service-grid .col:nth-child(6){animation-delay:.22s}
+
+@media (max-width: 576px){
+  .service-grid .service-tile{ min-height:120px; padding:14px 12px; }
+  .service-icon{ width:50px; height:50px; }
+}
+
+/* =============================== */
+/* 🌍 DESTINATIONS POPULAIRES */
+/* =============================== */
+.popular-section{
+  background: var(--ds-blue-dark); color:#fff; padding:5rem 0;
+}
+.popular-section h2,.popular-section .section-title{ color:#fff; }
+.popular-section .section-title::after{ background: var(--ds-blue-soft); }
+.popular-card{
+  background: linear-gradient(135deg, var(--ds-blue) 0%, #4b8cff 70%);
+  border:none; color:#fff; border-radius:1rem; box-shadow:var(--shadow);
+}
+.popular-card .card-title,.popular-card .card-text{ color:#fff; }
+
+/* =============================== */
+/* 🧩 MODALES */
+/* =============================== */
+.modal-body{ max-height: calc(100vh - 220px); overflow-y:auto; }
+@media (max-width: 992px){ .modal-dialog{ margin:1rem; } }
+/* Tête modale bleue DS (remplace .bg-success) */
+.modal-header.bg-success{ background-color: var(--ds-blue-dark) !important; }
+/* Boutons de pied */
+.modal-footer .btn-success{ background-color: var(--ds-blue) !important; border-color: var(--ds-blue) !important; font-weight:600; }
+.modal-footer .btn-success:hover{ background-color: var(--ds-blue-dark) !important; border-color: var(--ds-blue-dark) !important; }
+.modal-footer .btn-secondary{ background-color:#555 !important; border-color:#555 !important; }
+
+/* =============================== */
+/* 🦶 FOOTER */
+/* =============================== */
+.site-footer{
+  background: linear-gradient(160deg, var(--ds-blue-dark) 0%, #0640a3 60%, #032665 100%);
+  color:#fff;
+}
+.site-footer .nav-link{ color:#dbe7ff !important; padding:0; }
+.site-footer .nav-link:hover{ color:#fff !important; text-decoration:underline; text-underline-offset:4px; }
+.footer-sep{ border:0; height:1px; background:rgba(255,255,255,.12); }
+.footer-logo{ height:42px; width:auto; }
+.text-accent{ color:#93c5fd !important; }
+
+/* =============================== */
+/* 📱 RESPONSIVE NAV/BRAND */
+/* =============================== */
+@media (max-width: 992px){
+  #mainNav .brand-text{ font-size:1rem; }
+}
+@media (max-width: 576px){
+  #mainNav .logo-ds{ height:36px; }
+  #mainNav{ padding:.4rem 0; }
+}
+/* ===================== SERVICES À BORD ===================== */
+.service-tile {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 28px 10px;
+    box-shadow: 0 8px 24px rgba(16, 24, 40, 0.06);
+    transition: all .25s ease;
+    cursor: default;
+}
+
+.service-tile i {
+    font-size: 32px;
+    color: #0d6efd; /* bleu moderne / premium */
+    margin-bottom: 12px;
+}
+
+.service-tile p {
+    margin: 0;
+    font-weight: 500;
+    color: #14222b;
+    font-size: 16px;
+}
+
+/* Effet hover premium */
+.service-tile:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(16, 24, 40, 0.10);
+}
+
+/* Alignement propre des colonnes */
+.services-container .col {
+    display: flex;
+    justify-content: center;
+}

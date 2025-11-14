@@ -1,0 +1,287 @@
+{% extends "layout.html" %}
+{% block title %}Accueil{% endblock %}
+
+{% block content %}
+
+<!-- ===================== HERO ===================== -->
+<section class="hero-banner text-white">
+  <img src="{{ url_for('static', filename='images/suzuki_grand_vitara_banner.jpg') }}"
+       alt="Suzuki Grand Vitara Hybrid 4x4"
+       class="hero-banner-img">
+
+  <div class="hero-inner text-center">
+    <div class="hero-chip">
+      <i class="bi bi-leaf-fill"></i>
+      <span>Flotte hybride & récente – moins d’émissions de CO₂</span>
+    </div>
+
+    <h1 class="hero-title fw-bold mb-3">
+      Des trajets confortables, sûrs et respectueux de l’environnement
+    </h1>
+
+    <a href="#notre-flotte" class="btn btn-outline-light btn-lg px-5 fw-bold">
+      Voir la flotte
+    </a>
+  </div>
+</section>
+
+<!-- ===================== POURQUOI DS TRAVEL ===================== -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <h2 class="text-center mb-4 fw-bold section-title">
+      Pourquoi choisir <span class="text-success">DS vtc</span> ?
+    </h2>
+    <p class="text-center mb-5 lead">
+      Ponctualité, sécurité et confort — avec un engagement éco-responsable.
+    </p>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4 align-items-stretch">
+      {% set items = [
+        {"badge":"Services principaux","icon":"airplane","title":"Transferts aéroport AIBD","text":"Réservation simple et prise en charge fiable."},
+        {"badge":"Services principaux","icon":"signpost-split","title":"Trajets longue distance","text":"Déplacements à travers tout le Sénégal."},
+        {"badge":"Services principaux","icon":"briefcase","title":"Déplacements professionnels","text":"Idéal pour vos RDV, congrès et événements."},
+        {"badge":"Nos valeurs","icon":"clock-history","title":"Ponctualité","text":"Toujours à l’heure."},
+        {"badge":"Nos valeurs","icon":"heart","title":"Service personnalisé","text":"Trajets adaptés à vos besoins."},
+        {"badge":"Nos valeurs","icon":"chat-dots","title":"Assistance 24/7","text":"Support permanent."},
+        {"badge":"Nos engagements","icon":"cash-coin","title":"Tarifs clairs","text":"Prix convenus, sans frais cachés."},
+        {"badge":"Nos engagements","icon":"shield-lock","title":"Sécurité","text":"Chauffeurs pros, véhicules vérifiés."},
+        {"badge":"Nos engagements","icon":"cloud-sun","title":"Confort","text":"Véhicules récents & climatisés."}
+      ] %}
+
+      {% for it in items %}
+      <div class="col">
+        <div class="card-prestation h-100 p-4 text-center d-flex flex-column">
+          <span class="badge bg-success-subtle text-success border align-self-center mb-2">{{ it.badge }}</span>
+          <div class="text-warning fs-1 mb-2">
+            <i class="bi bi-{{ it.icon }}"></i>
+          </div>
+          <h5 class="mb-2">{{ it.title }}</h5>
+          <p class="text-muted mb-0">{{ it.text }}</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="py-5">
+  <div class="container text-center">
+    <h2 class="fw-bold mb-3 section-title">Services à bord</h2>
+    <p class="text-muted mb-5">Tout pour un trajet connecté, confortable et serein.</p>
+
+    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-6 g-4 services-container">
+      {% set services = [
+        ("geo-alt","Géolocalisation"),
+        ("wifi","Wi-Fi à bord"),
+        ("droplet","Bouteilles d’eau"),
+        ("lightning-charge","Chargeurs"),
+        ("snow","Climatisation"),
+        ("shield-check","Sécurité")
+      ] %}
+      {% for ic, label in services %}
+      <div class="col">
+        <div class="service-tile">
+          <i class="bi bi-{{ ic }}"></i>
+          <p>{{ label }}</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ===================== NOTRE FLOTTE ===================== -->
+<section class="container py-5" id="notre-flotte">
+  <h2 class="fw-bold mb-4 section-title">Notre flotte de véhicules</h2>
+  <p class="text-center mb-5 lead">
+    Flotte majoritairement <strong>hybride</strong> et <strong>récente</strong> :
+    confort, sécurité et respect de l’environnement.
+  </p>
+
+  <div class="row g-4 justify-content-center">
+    {% for vehicule in vehicules[:6] %}
+    <div class="col-md-4">
+      <div class="card card-vehicule border-0 position-relative">
+        {% set is_hybride = (vehicule.type and 'hyb' in vehicule.type|lower)
+                            or (vehicule.caracteristiques_techniques and 'hyb' in vehicule.caracteristiques_techniques|lower)
+                            or (vehicule.is_hybride is defined and vehicule.is_hybride) %}
+        {% if is_hybride %}
+          <span class="badge badge-eco position-absolute top-0 start-0 m-2">
+            <i class="bi bi-leaf me-1"></i>Hybride
+          </span>
+        {% endif %}
+        {% if vehicule.annee and vehicule.annee|int >= 2022 %}
+          <span class="badge badge-new position-absolute top-0 end-0 m-2">Neuf</span>
+        {% endif %}
+
+        <img loading="lazy"
+             src="{{ url_for('static', filename=vehicule.image or 'images/placeholder-vehicule.jpg') }}"
+             alt="{{ vehicule.marque }} {{ vehicule.modele }}">
+        <div class="card-body">
+          <h5 class="card-title fw-bold text-success mb-2">{{ vehicule.marque }} {{ vehicule.modele }}</h5>
+          <p class="small text-muted mb-3">
+            <i class="bi bi-people-fill me-1"></i>Passagers : {{ vehicule.capacite_passagers }}
+            &nbsp;·&nbsp;
+            <i class="bi bi-suitcase me-1"></i>Valises : {{ vehicule.nb_valises }}
+          </p>
+          <button class="btn btn-outline-success w-100"
+                  data-bs-toggle="modal"
+                  data-bs-target="#vehiculeModal{{ vehicule.id }}">
+            Détails & Réserver
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal détail véhicule -->
+    <div class="modal fade" id="vehiculeModal{{ vehicule.id }}" tabindex="-1" aria-labelledby="vehiculeModalLabel{{ vehicule.id }}" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header bg-success text-white">
+            <h5 class="modal-title" id="vehiculeModalLabel{{ vehicule.id }}">
+              {{ vehicule.marque }} {{ vehicule.modele }}
+            </h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row g-4">
+              <div class="col-md-6">
+                <img loading="lazy"
+                     src="{{ url_for('static', filename=vehicule.image or 'images/placeholder-vehicule.jpg') }}"
+                     class="img-fluid rounded"
+                     alt="photo {{ vehicule.marque }} {{ vehicule.modele }}">
+              </div>
+              <div class="col-md-6">
+                <ul class="list-unstyled">
+                  <li><strong>Immatriculation :</strong> {{ vehicule.immatriculation }}</li>
+                  <li><strong>Type :</strong> {{ vehicule.type }}</li>
+                  <li><strong>Caractéristiques :</strong> {{ vehicule.caracteristiques_techniques }}</li>
+                  <li><strong>Passagers :</strong> {{ vehicule.capacite_passagers }}</li>
+                  <li><strong>Valises :</strong> {{ vehicule.nb_valises }}</li>
+                  <li><strong>Volume coffre :</strong> {{ vehicule.volume_coffre_bagages }} L</li>
+                  <li><strong>Sièges bébé :</strong> {{ vehicule.nb_sieges_bebe }}</li>
+                  <li><strong>Coffre de toit :</strong> {% if vehicule.coffre_de_toit %}Oui{% else %}Non{% endif %}</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+            <a class="btn btn-success w-50" href="{{ url_for('main.reservation_page', vehicule_id=vehicule.id) }}">Réserver</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+<!-- ===================== AVIS CLIENTS ===================== -->
+<section class="py-5 bg-light">
+  <div class="container text-center">
+    <h2 class="fw-bold mb-4 section-title">Ce que disent nos clients</h2>
+    <p class="lead text-muted mb-5">
+      La satisfaction de nos passagers est notre plus belle récompense.<br>
+      Merci pour votre confiance au quotidien.
+    </p>
+
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="card p-4 shadow-sm border-0 h-100">
+          <div class="mb-2 text-warning fs-5">★★★★★</div>
+          <p>“Chauffeur ponctuel, voiture impeccable, trajet AIBD parfait.”</p>
+          <strong class="text-success">— Fatou D.</strong>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card p-4 shadow-sm border-0 h-100">
+          <div class="mb-2 text-warning fs-5">★★★★★</div>
+          <p>“Excellent service, communication fluide par WhatsApp. Très professionnel.”</p>
+          <strong class="text-success">— Mamadou K.</strong>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card p-4 shadow-sm border-0 h-100">
+          <div class="mb-2 text-warning fs-5">★★★★★</div>
+          <p>“Service impeccable ! Réservation rapide et chauffeur très courtois. Je recommande vivement.”</p>
+          <strong class="text-success">— Aïcha S.</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<!-- ===================== TRANSFERTS POPULAIRES ===================== -->
+<section class="container my-5">
+  <h2 class="text-center mb-4 fw-bold text-success section-title">Destination les plus demandées</h2>
+  <div class="row g-4">
+    {% for t in transferts_populaires %}
+    <div class="col-12 col-md-6 col-lg-3">
+      <div class="card text-white h-100 border-0 popular-card">
+        <div class="card-body text-center">
+          <h5 class="card-title fw-bold">{{ t.depart }} <br> ⇄ <br> {{ t.arrivee }}</h5>
+          <p class="card-text mt-3">à partir de {{ '{:,.0f}'.format(t.prix_cfa) }} FCFA</p>
+          {% if t.distance_km %}<p class="mb-1 small">Distance : {{ t.distance_km }} km</p>{% endif %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- ===================== FAQ ===================== -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <h2 class="text-center fw-bold mb-3 section-title">Questions fréquentes</h2>
+    <p class="text-center text-muted mb-4">Tout ce qu’il faut savoir avant de réserver.</p>
+
+    <div class="accordion mx-auto" id="faq" style="max-width:900px;">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="q1">
+          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#a1">
+            Comment réserver un trajet ?
+          </button>
+        </h2>
+        <div id="a1" class="accordion-collapse collapse show" data-bs-parent="#faq">
+          <div class="accordion-body">
+            Réservez depuis l’accueil (« Voir la flotte ») ou la page réservation. Confirmation instantanée.
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="q2">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#a2">
+            Proposez-vous des sièges bébé ?
+          </button>
+        </h2>
+        <div id="a2" class="accordion-collapse collapse" data-bs-parent="#faq">
+          <div class="accordion-body">
+            Oui, sur demande lors de la réservation (selon disponibilité).
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="q3">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#a3">
+            Puis-je modifier ou annuler ma réservation ?
+          </button>
+        </h2>
+        <div id="a3" class="accordion-collapse collapse" data-bs-parent="#faq">
+          <div class="accordion-body">
+            Oui, jusqu’à 24h avant le départ sans frais.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Bouton WhatsApp flottant -->
+<a href="https://wa.me/221764159999" class="whatsapp-float" target="_blank" aria-label="WhatsApp">
+  <i class="bi bi-whatsapp"></i>
+</a>
+
+{% endblock %}

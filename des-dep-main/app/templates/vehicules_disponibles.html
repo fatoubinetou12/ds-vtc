@@ -1,0 +1,118 @@
+{% extends "layout.html" %}
+{% block title %}Nos véhicules – SD Travel{% endblock %}
+
+{% block content %}
+
+<!-- ===== En-tête ===== -->
+<section class="py-5 text-white text-center"
+         style="background:url('https://images.unsplash.com/photo-1503376780353-7e6692767b70') center/cover no-repeat;">
+  <div class="container py-4" style="background:rgba(0,0,0,0.55); border-radius:14px;">
+    <h1 class="fw-bold mb-2">Notre flotte – DS VTC</h1>
+    <p class="mb-0">Choisissez votre véhicule et réservez en quelques clics.</p>
+  </div>
+</section>
+
+<!-- ===== Liste des véhicules ===== -->
+<section class="py-5 bg-light">
+  <div class="container">
+    {% if vehicules %}
+    <div class="row g-4">
+      {% for vehicule in vehicules %}
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm vehicle-card">
+          <div class="ratio ratio-16x9">
+            <img src="{{ url_for('static', filename=vehicule.image or 'images/vehicules/placeholder.jpg') }}"
+                 alt="{{ vehicule.marque }} {{ vehicule.modele }}"
+                 class="card-img-top object-cover">
+          </div>
+
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title mb-1">
+              {{ vehicule.type or 'Véhicule' }} – {{ vehicule.marque }} {{ vehicule.modele }}
+            </h5>
+            <p class="text-muted mb-2">
+              {{ vehicule.caracteristiques_techniques or 'Confort, sécurité et élégance.' }}
+            </p>
+
+            <ul class="list-unstyled small mb-3">
+              <li>👥 Capacité : {{ vehicule.capacite_passagers or 4 }} passagers</li>
+              {% if vehicule.nb_valises %}<li>🧳 Valises : {{ vehicule.nb_valises }}</li>{% endif %}
+              {% if vehicule.coffre_de_toit %}<li>📦 Coffre de toit : Oui</li>{% endif %}
+            </ul>
+
+            <button class="btn btn-outline-success w-100 mt-auto"
+                    data-bs-toggle="modal"
+                    data-bs-target="#vehiculeModal{{ vehicule.id }}">
+              Détails & Réserver
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== MODAL DÉTAILS ===== -->
+      <div class="modal fade" id="vehiculeModal{{ vehicule.id }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+          <div class="modal-content">
+
+            <div class="modal-header bg-success text-white">
+              <h5 class="modal-title">
+                {{ vehicule.marque }} {{ vehicule.modele }}
+              </h5>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+              <div class="row g-4">
+                <div class="col-md-6">
+                  <img src="{{ url_for('static', filename=vehicule.image or 'images/placeholder-vehicule.jpg') }}"
+                       class="img-fluid rounded">
+                </div>
+
+                <div class="col-md-6">
+                  <ul class="list-unstyled">
+                    <li><strong>Immatriculation :</strong> {{ vehicule.immatriculation }}</li>
+                    <li><strong>Type :</strong> {{ vehicule.type }}</li>
+                    <li><strong>Caractéristiques :</strong> {{ vehicule.caracteristiques_techniques }}</li>
+                    <li><strong>Passagers :</strong> {{ vehicule.capacite_passagers }}</li>
+                    <li><strong>Valises :</strong> {{ vehicule.nb_valises }}</li>
+                    <li><strong>Volume coffre :</strong> {{ vehicule.volume_coffre_bagages }} L</li>
+                    <li><strong>Sièges bébé :</strong> {{ vehicule.nb_sieges_bebe }}</li>
+                    <li><strong>Coffre de toit :</strong> {% if vehicule.coffre_de_toit %}Oui{% else %}Non{% endif %}</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- ===== FOOTER AVEC BOUTON RETOUR ===== -->
+            <div class="modal-footer d-flex justify-content-between">
+              <button class="btn btn-outline-secondary"
+                      data-bs-dismiss="modal">
+                ← Retour
+              </button>
+
+              <a href="{{ url_for('main.reservation_page', vehicule_id=vehicule.id) }}"
+                 class="btn btn-success px-4">
+                Réserver →
+              </a>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      {% endfor %}
+    </div>
+    {% else %}
+      <div class="text-center py-5">
+        <p class="lead mb-3">Aucun véhicule disponible pour le moment.</p>
+        <a href="{{ url_for('main.home') }}" class="btn btn-outline-dark">Retour à l’accueil</a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+<style>
+  .object-cover { object-fit: cover; height:100%; width:100%; }
+</style>
+
+{% endblock %}
