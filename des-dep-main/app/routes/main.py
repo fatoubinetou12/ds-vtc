@@ -16,7 +16,10 @@ from app.forms.forms import (
     AdminLoginForm, AddVehiculeForm, ReservationForm,
     AddTarifForfaitForm, AddTarifRegleForm, ContactForm
 )
-from app.models.models import Vehicule, Reservation, TarifForfait, TarifRegle
+from app.models.models import (
+    Vehicule, Reservation, TarifForfait, TarifRegle, Admin
+)
+
 
 # ========================
 # Blueprint
@@ -150,12 +153,20 @@ def about():
 def login():
     form = AdminLoginForm()
     if form.validate_on_submit():
-        if form.username.data == "admin" and form.password.data == "admin123":
+        username = (form.username.data or "").strip()
+        password = form.password.data or ""
+
+        admin = Admin.query.filter_by(username=username).first()
+        if admin and admin.check_password(password):
             session["admin_logged_in"] = True
+            session["admin_id"] = admin.id
             flash("Connexion admin réussie.", "success")
             return redirect(request.args.get("next") or url_for("main.admin_dashboard"))
+
         flash("Identifiants invalides.", "danger")
+
     return render_template("login.html", form=form)
+
 
 @main.route("/logout")
 def logout():

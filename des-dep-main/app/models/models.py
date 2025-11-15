@@ -1,16 +1,25 @@
 from datetime import datetime
+from werkzeug.security import generate_password_hash, check_password_hash
 from app import db
 
 
-# --- Gestion des administrateurs ---
+
+
+
 class Admin(db.Model):
-    __tablename__ = 'admin'
+    __tablename__ = "admin"   # tu as déjà une table 'admin' en base, on garde ce nom
     id = db.Column(db.Integer, primary_key=True)
-    nom = db.Column(db.String(100), nullable=False)
-    prenom = db.Column(db.String(100), nullable=False)
+    username = db.Column(db.String(64), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    mot_de_passe = db.Column(db.String(255), nullable=False)
-    notifications = db.relationship('Notification', backref='admin', lazy=True)
+    password_hash = db.Column(db.String(255), nullable=False)
+
+    def set_password(self, password: str):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password: str) -> bool:
+        return check_password_hash(self.password_hash, password)
+
+
 
 
 # --- Véhicules ---

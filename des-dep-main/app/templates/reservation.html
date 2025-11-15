@@ -131,43 +131,28 @@
   </div>
 </section>
 
-<!-- ========= GOOGLE PLACES AUTOCOMPLETE POUR CETTE PAGE ========= -->
+{# ===== Google Maps Places Autocomplete, même logique que pour les Tarifs ===== #}
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBy8naZgWRwxtGy7lztqvaEhb0L6ODbJMs&libraries=places"></script>
 <script>
-  function initReservationAutocomplete() {
-    const options = {
-      componentRestrictions: { country: ["sn"] },   // Sénégal
-      fields: ["formatted_address", "geometry", "name"],
-      types: ["geocode"]
-    };
+function initAutocompleteReservation() {
+  const departInput  = document.getElementById('adresse_depart');
+  const arriveeInput = document.getElementById('adresse_arrivee');
 
-    const departInput  = document.getElementById("adresse_depart");
-    const arriveeInput = document.getElementById("adresse_arrivee");
-
-    if (window.google && google.maps && google.maps.places) {
-      if (departInput) {
-        new google.maps.places.Autocomplete(departInput, options);
-      }
-      if (arriveeInput) {
-        new google.maps.places.Autocomplete(arriveeInput, options);
-      }
-    }
+  if (departInput) {
+    new google.maps.places.Autocomplete(departInput, {
+      types: ['geocode'],
+      componentRestrictions: { country: 'sn' }
+    });
   }
+  if (arriveeInput) {
+    new google.maps.places.Autocomplete(arriveeInput, {
+      types: ['geocode'],
+      componentRestrictions: { country: 'sn' }
+    });
+  }
+}
 
-  // On attend que le DOM soit prêt, puis on initialise.
-  document.addEventListener("DOMContentLoaded", function () {
-    // Si le script Google Maps est déjà chargé (layout / tarifs)
-    if (window.google && google.maps && google.maps.places) {
-      initReservationAutocomplete();
-    } else {
-      // Si le script se charge un peu après, on vérifie toutes les 500 ms
-      const intervalId = setInterval(function () {
-        if (window.google && google.maps && google.maps.places) {
-          clearInterval(intervalId);
-          initReservationAutocomplete();
-        }
-      }, 500);
-    }
-  });
+document.addEventListener('DOMContentLoaded', initAutocompleteReservation);
 </script>
 
 {% endblock %}
