@@ -248,7 +248,20 @@ def modifier_vehicule(id):
 @main.route("/vehicule/supprimer")
 @admin_required
 def supprimer_vehicule():
-    v = Vehicule.query.get_or_404(request.args.get("id"))
+    vehicule_id = request.args.get("id")
+    v = Vehicule.query.get_or_404(vehicule_id)
+
+    # Vérifier s’il existe des réservations liées à ce véhicule
+    reservations_liees = Reservation.query.filter_by(vehicule_id=v.id).count()
+
+    if reservations_liees > 0:
+        flash(
+            f"Impossible de supprimer ce véhicule : {reservations_liees} réservation(s) y sont encore associées.",
+            "danger",
+        )
+        return redirect(url_for("main.admin_dashboard"))
+
+    # Sinon on peut le supprimer
     db.session.delete(v)
     db.session.commit()
     flash("Véhicule supprimé avec succès.", "success")
